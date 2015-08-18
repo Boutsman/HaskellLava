@@ -4,9 +4,11 @@ import Control.Monad (liftM)
 transform :: [String] -> [String]
 transform [] = []
 transform (filesize:usbSpace:dss) =
-	let (a:ss) = words filesize;
-		(e:zs) = words usbSpace;
-	in a:e:(transform dss)
+	let (nrOfFiles:filesizes) = words filesize;
+		(nrOfSticks:stickSizes) = words usbSpace;
+		result = if (teGroot filesizes stickSizes) == True then "onmogelijk":[]
+				else (show(som stickSizes - som filesizes)):[] --a:e:(transform dss); --result = "onmogelijk":[]
+	in result
 
 main :: IO ()
 main = do
@@ -28,7 +30,7 @@ sort [] = []
 sort (x:xs) = insert x (sort xs)
 
 som [] = 0
-som (x:xs) = x + som xs
+som (x:y:xs) = (read x :: Int) + (read y :: Int) + som xs
 
 isEven x
 	| mod x 2 == 0	= True
@@ -49,7 +51,7 @@ laagsteWaarde (x:xs) = grootsteWaarde x xs
 -- x = filesize
 -- y = available space
 teGroot x y
-	| som x < som y		= False
+	| som x <= som y		= False
 	| otherwise			= True
 	
 testLet x = 
